@@ -1,12 +1,22 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { SupabaseService } from './supabase.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [], 
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'codebyvince-angular';
+  connected: boolean | null = null;
+
+  constructor(private supabaseService: SupabaseService) {}
+
+  async ngOnInit() {
+    this.connected = await this.supabaseService.testConnection();
+  }
 }
+
+
