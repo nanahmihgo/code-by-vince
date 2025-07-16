@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core'
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
-import { SupabaseService } from '../services/supabase.service'
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { SupabaseService } from '../services/supabase.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-auth',
@@ -19,13 +20,24 @@ export class AuthComponent implements OnInit {
 
   constructor(
     private readonly supabase: SupabaseService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly router: Router
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.signInForm = this.formBuilder.group({
       email: '',
     })
+
+    const { data } = await this.supabase['supabase'].auth.getSession()
+    if (data.session) {
+      this.router.navigate(['/profil'])
+    }
+
+    const session = await this.supabase.getSession()
+      if (session) {
+        this.router.navigate(['/profile'])
+    }
   }
 
   async onSubmit(): Promise<void> {

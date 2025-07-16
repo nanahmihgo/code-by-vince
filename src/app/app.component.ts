@@ -10,15 +10,13 @@ import { AuthComponent } from "./auth/auth.component";
 })
 export class AppComponent implements OnInit {
   title = 'angular-user-management';
-  session: any = null; // Typage minimal, à améliorer selon la structure réelle
+  session: any = null; 
 
   constructor(private readonly supabase: SupabaseService) {}
 
-  ngOnInit(): void {
-    // Initialisation de la session actuelle
-    this.session = this.supabase.session;
+  async ngOnInit(): Promise<void> {
+    this.session = await this.supabase.getSession();
 
-    // Ecoute des changements d'authentification
     this.supabase.authChanges((event, session) => {
       this.session = session;
     });

@@ -20,17 +20,14 @@ export interface Profile {
 })
 export class SupabaseService {
   private supabase: SupabaseClient
-  _session: AuthSession | null = null
 
   constructor() {
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey)
   }
 
-  get session() {
-    this.supabase.auth.getSession().then(({ data }) => {
-      this._session = data.session
-    })
-    return this._session
+  async getSession(): Promise<AuthSession | null> {
+    const { data } = await this.supabase.auth.getSession()
+    return data.session
   }
 
   profile(user: User) {
