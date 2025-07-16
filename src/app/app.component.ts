@@ -1,22 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import { SupabaseService } from './supabase.service';
+import { SupabaseService } from './services/supabase.service';
+import { AuthComponent } from "./auth/auth.component";
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [], 
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  imports: [AuthComponent],
+  // styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  title = 'codebyvince-angular';
-  connected: boolean | null = null;
+  title = 'angular-user-management';
+  session: any = null; 
 
-  constructor(private supabaseService: SupabaseService) {}
+  constructor(private readonly supabase: SupabaseService) {}
 
-  async ngOnInit() {
-    this.connected = await this.supabaseService.testConnection();
+  async ngOnInit(): Promise<void> {
+    this.session = await this.supabase.getSession();
+
+    this.supabase.authChanges((event, session) => {
+      this.session = session;
+    });
   }
 }
+
 
 
